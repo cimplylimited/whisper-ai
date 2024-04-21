@@ -1,0 +1,8 @@
+/whisper-ai_env/
+
+/logs/
+
+.*
+!.gitignore
+
+
