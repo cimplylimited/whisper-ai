@@ -1,0 +1,90 @@
+{
+    "response": ```json
+{
+  "Meeting_Summary": {
+    "Title": "Cimply | Marketing Strategy Bi-Weekly - 2024/11/19 12:00 EST",
+    "Attendees": ["Daniel Kowal", "Mark Donatelli"],
+    "Outline": {
+      "1. Campaign Outreach": [
+        "Mark to work on outreach campaign targeting local agencies.",
+        "Focus on agencies with 50-200+ employees and sophisticated media practices."
+      ],
+      "2. Agency Criteria": [
+        "Prefer agencies with established search, social, or SEO practices.",
+        "Look for well-defined processes and majority support within the United States."
+      ],
+      "3. Industry Focus": [
+        "Industry profile is not crucial; can be B2B or B2C.",
+        "Agencies lacking sophisticated media departments are good candidates."
+      ],
+      "4. Agency Relationships": [
+        "Pursue consultative and referral relationships.",
+        "Consider temporary fill-in roles during agency transitions."
+      ],
+      "5. Service Focus": [
+        "Concentrate on paid search, social, SEO.",
+        "Aim to onboard quickly and prove credibility."
+      ],
+      "6. Transcription and Summary Process": [
+        "Transcripts will be emailed and stored for review.",
+        "Automate transcription and summary processes where possible."
+      ],
+      "7. Content Production": [
+        "Produce taglines and calls to action for social media.",
+        "Create personalized, relevant outreach content."
+      ],
+      "8. Competitor Relationships": [
+        "Some agencies may be competitors; navigate non-compete clauses carefully.",
+        "Partnerships and client relationships are still possible."
+      ],
+      "9. Agency Operations Consulting": [
+        "Offer help to agencies needing operational scaling.",
+        "Become consultants within agencies to improve their operations."
+      ],
+      "10. Hiring": [
+        "Consider hiring for analytical skills and interest in biddable marketplaces.",
+        "Find candidates who can build trust and know when to ask for information."
+      ],
+      "11. Tool Development": [
+        "Build micro applications to support workflows.",
+        "Focus on tools that provide ROI analysis and other valuable outputs."
+      ],
+      "12. Marketing and Branding": [
+        "Discuss color palettes and visual branding.",
+        "Ensure consistent use of colors and styles across materials."
+      ],
+      "13. Technical Issues": [
+        "Encountered connectivity problems during the meeting."
+      ]
+    },
+    "Key_Takeaways": {
+      "Agency outreach should target those with potential for managed services.",
+      "Industry focus is less important than the agency's media capabilities.",
+      "Prioritize services that allow for quick integration and credibility establishment.",
+      "Automation of transcription and content production is a strategic goal.",
+      "Developing relationships with competitors can be beneficial if managed carefully.",
+      "Tool development is key for efficiency and providing valuable insights to clients."
+    },
+    "Next_Steps": {
+      "Mark Donatelli": [
+        "Continue developing outreach campaign for local agencies.",
+        "Produce taglines and calls to action for social media.",
+        "Refine content for personalized outreach."
+      ],
+      "Daniel Kowal": [
+        "Identify and approach agencies that meet the established criteria.",
+        "Work on automating transcription and summary processes.",
+        "Develop and iterate on micro applications for workflow support."
+      ]
+    },
+    "Strategic_Initiatives": {
+      "Automation": "Develop systems to automate transcription, content production, and workflow tools.",
+      "Hiring": "Find and hire talent with analytical skills and an understanding of biddable marketplaces.",
+      "Marketing": "Establish a clear and consistent branding strategy, including color palettes and style guides.",
+      "Tool Development": "Create tools for ROI analysis and other key performance metrics to assist clients.",
+      "Agency Relationships": "Strategize on building partnerships and consulting roles within agencies, even when they are competitors."
+    }
+  }
+}
+```
+}
