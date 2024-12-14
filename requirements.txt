@@ -34,3 +34,6 @@ torch==2.2.2
 tqdm==4.66.2
 typing_extensions==4.11.0
 urllib3==2.2.1
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib

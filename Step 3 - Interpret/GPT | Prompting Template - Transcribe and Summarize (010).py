@@ -29,7 +29,8 @@ MODEL_NAME = "o1-preview"  # Adjust the model as needed
 
 # System prompt and instruction prompt
 MAIN_PROMPT = """
-You are a helpful assistant tasked with reviewing a meeting transcript and converting it into a structured JSON summary that our team can use to review and plan for the future.
+You are a helpful assistant tasked with reviewing a meeting transcript and converting it into a structured JSON 
+summary that our team can use to review and plan for the future.
 
 Please follow these instructions:
 
