@@ -9,14 +9,16 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.http import MediaIoBaseDownload, MediaInMemoryUpload
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 # ==========================
 # User-Defined Variables
 # ==========================
 
 # Google Drive file and folder IDs
-TRANSCRIPT_FILE_ID = '17J6qvitsjqAnwe-h5FwoqUsIxF1PgdX_WZ7RlkYPHM8'  # Replace with your transcript file ID
-OUTPUT_FOLDER_ID = '19znkdIQco-F39dTArhQ--iy8n3l8qEAf'      # Replace with your output folder ID
+TRANSCRIPT_FILE_ID = '1oqSdfipJXgw_yZaEc2ZBrt2sfjHbru4J'  # Replace with your transcript file ID
+OUTPUT_FOLDER_ID = '1w62_zSHSFGoQy751phPEnO9jbh29ZXbY'      # Replace with your output folder ID
 
 # OAuth directory path for storing credentials
 OAUTH_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.oauth')  # Default is './.oauth' inside the package directory

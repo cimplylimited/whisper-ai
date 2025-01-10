@@ -1,8 +1,43 @@
-/whisper-ai_env/
+# Audio Transcripts Files
+/Audio\ Transcripts/
 
+# Log Files
+script.log
 /logs/
+*.log  # Log files
 
+/whisper-ai_env/
 .*
 !.gitignore
+credentials.json
+token.json
+.oauth
 
+# Miscellaneous
+pids/  # Process ID files
+*.pid
+*.seed
+coverage/  # Test coverage reports
+*.exe  # Executable files
+*.dll  # Dynamic libraries
+*.so  # Shared objects
+*.dylib  # macOS dynamic libraries
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tmp  # Temporary files
+*.swp  # Vim swap files
 
+# Python
+**/__pycache__/  # Directory for storing Python bytecode
+*.py[cod]  # Compiled Python files
+venv/  # Virtual environment directory
+.env  # Environment variables
+build/  # Build directory
+dist/  # Distribution directory
+*.egg-info/  # Metadata from egg packaging
+pip-log.txt  # Logs from pip operations
+
+# IDEs and Editors
+.vscode/  # VS Code settings

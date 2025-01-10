@@ -15,8 +15,8 @@ from googleapiclient.errors import HttpError
 # ==========================
 
 # Google Drive file and folder IDs
-TRANSCRIPT_FILE_ID = '1qBTYT0n9oV4smzjpEgCYEARE7c_v65UzMZW-WnCQ6PY'  # Replace with your transcript file ID
-OUTPUT_FOLDER_ID = '19znkdIQco-F39dTArhQ--iy8n3l8qEAf'      # Replace with your output folder ID
+TRANSCRIPT_FILE_ID = '1oqSdfipJXgw_yZaEc2ZBrt2sfjHbru4J'  # Replace with your transcript file ID
+OUTPUT_FOLDER_ID = '1w62_zSHSFGoQy751phPEnO9jbh29ZXbY'      # Replace with your output folder ID
 
 # OAuth directory path for storing credentials
 OAUTH_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.oauth')  # Default is './.oauth' inside the package directory
