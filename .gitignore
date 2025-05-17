@@ -41,3 +41,5 @@ pip-log.txt  # Logs from pip operations
 
 # IDEs and Editors
 .vscode/  # VS Code settings
+
+*.json
