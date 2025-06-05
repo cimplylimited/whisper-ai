@@ -1,0 +1,97 @@
+/Users/johndoe/Git/whisper-ai/whisper-ai_env/bin/python: can't open file '/Users/johndoe/Git/whisper-ai/Step 3 - Interpret/safe_run.py': [Errno 2] No such file or directory
+2025-05-18T11:40:18.343092: Not on allowed IP (75.214.31.241); aborting job.
+2025-05-18T11:43:10.892373: Not on allowed IP (75.214.31.241); aborting job.
+2025-05-18 11:44:26,118 - INFO - batch_summarize_and_archive - ==== Gathering all Google Docs transcripts for all users...
+2025-05-18 11:44:26,119 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-18 11:44:26,123 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.00s
+2025-05-18 11:44:26,123 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-18 11:44:26,884 - DEBUG - wrapper - Completed 'list_google_docs_files' in 0.76s
+2025-05-18 11:44:26,885 - INFO - batch_summarize_and_archive - No Google Docs files found in recording folder 1muwBzpF_Zs81KumQ35o-Qxbqs6PxC5Uc; skipping.
+2025-05-18 11:44:26,885 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-18 11:44:26,894 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-18 11:44:26,894 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-18 11:44:27,501 - DEBUG - wrapper - Completed 'list_google_docs_files' in 0.61s
+2025-05-18 11:44:27,501 - INFO - batch_summarize_and_archive - No Google Docs files found in recording folder 1Jg1zgYaIwFF2W6EnVGAvnu_pOcZOhuFv; skipping.
+All batches complete.
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: /Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json
+USER_TO_IMPERSONATE: dk@cimplylimited.com
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: '/Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json'
+USER_TO_IMPERSONATE: 'dk@cimplylimited.com'
+ALIAS_FROM: 'james.grant@cimplylimited.com'
+TO_EMAIL: 'dk@cimplylimited.com'
+LOG_FILE: '/Users/johndoe/Git/whisper-ai/Step 3 - Interpret/batch_job.log'
+Log sent via Gmail API as alias.
+2025-05-18T11:44:24.197092: On allowed public IP (75.214.31.241); running batch job.
+2025-05-18T11:44:24.197092: Main script completed successfully.
+2025-05-18T11:44:24.197092: Log notification email sent successfully.
+2025-05-19 04:00:14,611 - INFO - batch_summarize_and_archive - ==== Gathering all Google Docs transcripts for all users...
+2025-05-19 04:00:14,613 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-19 04:00:14,634 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-19 04:00:14,635 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-19 04:00:15,352 - DEBUG - wrapper - Completed 'list_google_docs_files' in 0.72s
+2025-05-19 04:00:15,353 - INFO - batch_summarize_and_archive - No Google Docs files found in recording folder 1muwBzpF_Zs81KumQ35o-Qxbqs6PxC5Uc; skipping.
+2025-05-19 04:00:15,353 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-19 04:00:15,360 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-19 04:00:15,360 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-19 04:00:15,934 - DEBUG - wrapper - Completed 'list_google_docs_files' in 0.57s
+2025-05-19 04:00:15,935 - INFO - batch_summarize_and_archive - No Google Docs files found in recording folder 1Jg1zgYaIwFF2W6EnVGAvnu_pOcZOhuFv; skipping.
+All batches complete.
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: /Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json
+USER_TO_IMPERSONATE: dk@cimplylimited.com
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: '/Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json'
+USER_TO_IMPERSONATE: 'dk@cimplylimited.com'
+ALIAS_FROM: 'james.grant@cimplylimited.com'
+TO_EMAIL: 'dk@cimplylimited.com'
+LOG_FILE: '/Users/johndoe/Git/whisper-ai/Step 3 - Interpret/batch_job.log'
+Log sent via Gmail API as alias.
+2025-05-19T04:00:09.546435: On allowed public IP (75.214.31.241); running batch job.
+2025-05-19T04:00:09.546435: Main script completed successfully.
+2025-05-19T04:00:09.546435: Log notification email sent successfully.
+2025-05-21 04:00:17,768 - INFO - batch_summarize_and_archive - ==== Gathering all Google Docs transcripts for all users...
+2025-05-21 04:00:17,769 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-21 04:00:17,794 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.02s
+2025-05-21 04:00:17,795 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-21 04:00:18,799 - DEBUG - wrapper - Completed 'list_google_docs_files' in 1.00s
+2025-05-21 04:00:18,800 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-21 04:00:18,808 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-21 04:00:21,729 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-21 04:00:21,748 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.02s
+2025-05-21 04:00:23,052 - INFO - archive_and_process - Moved Cimply | Sales Pipeline Weekly - 2025/05/19 13:57 EDT - Transcript to archive folder 1AnyOtuq1ajr9zlp1c5RWaoFRZQb8Gq52
+2025-05-21 04:00:23,053 - DEBUG - wrapper - Starting 'get_file_content_from_google_drive'
+2025-05-21 04:00:24,425 - DEBUG - wrapper - Completed 'get_file_content_from_google_drive' in 1.37s
+2025-05-21 04:00:24,426 - DEBUG - wrapper - Starting 'generate_summary'
+2025-05-21 04:01:21,124 - DEBUG - wrapper - Completed 'generate_summary' in 56.70s
+2025-05-21 04:01:21,125 - DEBUG - wrapper - Starting 'upload_content_to_google_drive'
+2025-05-21 04:01:22,989 - DEBUG - wrapper - Completed 'upload_content_to_google_drive' in 1.86s
+2025-05-21 04:01:22,990 - DEBUG - wrapper - Starting 'copy_file_to_folder'
+2025-05-21 04:01:27,661 - DEBUG - wrapper - Completed 'copy_file_to_folder' in 4.67s
+2025-05-21 04:01:27,661 - INFO - archive_and_process - Processed Cimply | Sales Pipeline Weekly - 2025/05/19 13:57 EDT - Transcript successfully
+2025-05-21 04:01:27,662 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-21 04:01:27,668 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-21 04:01:29,543 - DEBUG - wrapper - Starting 'authenticate_google_drive'
+2025-05-21 04:01:29,552 - DEBUG - wrapper - Completed 'authenticate_google_drive' in 0.01s
+2025-05-21 04:01:29,553 - DEBUG - wrapper - Starting 'list_google_docs_files'
+2025-05-21 04:01:30,212 - DEBUG - wrapper - Completed 'list_google_docs_files' in 0.66s
+2025-05-21 04:01:30,212 - INFO - batch_summarize_and_archive - No Google Docs files found in recording folder 1Jg1zgYaIwFF2W6EnVGAvnu_pOcZOhuFv; skipping.
+Found 1 transcript file(s) in 1muwBzpF_Zs81KumQ35o-Qxbqs6PxC5Uc
+Batch log appended (1 file(s)) for user folder 1muwBzpF_Zs81KumQ35o-Qxbqs6PxC5Uc
+All batches complete.
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: /Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json
+USER_TO_IMPERSONATE: dk@cimplylimited.com
+CWD: /Users/johndoe/Git/whisper-ai/Step 3 - Interpret
+SERVICE_ACCOUNT_FILE: '/Users/johndoe/.key/google_cloudservices/meet-recording-management-b7cc24109698.json'
+USER_TO_IMPERSONATE: 'dk@cimplylimited.com'
+ALIAS_FROM: 'james.grant@cimplylimited.com'
+TO_EMAIL: 'dk@cimplylimited.com'
+LOG_FILE: '/Users/johndoe/Git/whisper-ai/Step 3 - Interpret/batch_job.log'
+Log sent via Gmail API as alias.
+2025-05-21T04:00:11.128912: On allowed public IP (75.214.31.241); running batch job.
+2025-05-21T04:00:11.128912: Main script completed successfully.
+2025-05-21T04:00:11.128912: Log notification email sent successfully.
+2025-05-25T04:01:40.008989: IP check failed: HTTPSConnectionPool(host='api.ipify.org', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x10cc5b670>: Failed to resolve 'api.ipify.org' ([Errno 8] nodename nor servname provided, or not known)"))
+2025-05-25T04:01:39.969458: Could not retrieve public IP; aborting job.
