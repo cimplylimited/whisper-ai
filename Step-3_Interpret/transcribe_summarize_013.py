@@ -17,6 +17,7 @@ from googleapiclient.http import MediaIoBaseDownload, MediaInMemoryUpload
 from openai import OpenAI
 
 # === LOGGING CONFIGURATION ===
+## JUST REMEMBER THAT I WANT TO LOOK AT THE LOG OUTPUT AND ROUTE TO GDRIVE STANDING FOLDER**
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(funcName)s - %(message)s')

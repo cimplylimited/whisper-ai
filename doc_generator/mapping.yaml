@@ -1,0 +1,49 @@
+fields:
+  - jsonKey: title
+    placeholder: "{{TITLE}}"
+    type: text
+
+  - jsonKey: date
+    placeholder: "{{DATE}}"
+    type: text
+    transform: "iso-date"          # custom helper turns 2024-12-17T09:00Z → 2024-12-17
+
+  - jsonKey: attendees
+    placeholder: "{{ATTENDEES}}"
+    type: text
+    transform: "join(', ')"
+
+  - jsonKey: summary
+    placeholder: "{{EXEC_SUMMARY}}"
+    type: text
+
+  - jsonKey: outline
+    placeholder: "{{OUTLINE}}"
+    type: bullets
+
+  - jsonKey: key_takeaways
+    placeholder: "{{KEY_TAKEAWAYS}}"
+    type: bullets
+
+tables:
+  - jsonKey: next_steps
+    bookmark: "BM_NEXT_STEPS_TABLE"
+    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+
+  - jsonKey: strategic_initiatives
+    bookmark: "BM_STRATEGIC_TABLE"
+    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+
+  - jsonKey: executive_followup
+    bookmark: "BM_EXEC_FOLLOW_TABLE"
+    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+
+  - jsonKey: james_grant_actions
+    bookmark: "BM_JG_TABLE"
+    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+
+links:
+  - jsonKey: transcript_link
+    placeholder: "{{TRANSCRIPT_LINK}}"
+  - jsonKey: summary_link
+    placeholder: "{{SUMMARY_LINK}}"
