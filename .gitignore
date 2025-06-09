@@ -3,6 +3,11 @@ script.log
 /logs/
 *.log
 
+
+#pycache
+*.pyc
+
+
 /whisper-ai_env/
 .*
 !.gitignore

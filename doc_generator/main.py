@@ -64,6 +64,12 @@ def main(transcript_json_path):
             logger.error(f"{var} not set in .env")
             exit(1)
 
+    import pprint
+
+    # … existing code …
+    normalized = normalize_transcript(raw_transcript)   # <- the canonical form
+    pprint.pp(normalized.get("key_takeaways", [])[:2])  # <-- add this line
+
     # Initialize and run DocBuilder
     doc_builder = DocBuilder(
         template_doc_id=template_doc_id,

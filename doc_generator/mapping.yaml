@@ -21,39 +21,104 @@ sections:
     default: "No Executive Summary or meeting details available."
 
   - jsonKey: outline
-    docHeading: "{{OUTLINE}}"
-    type: section_bullets   # signal you expect [{section, bullets}] objects!
+    docHeading: "{{OUTLINE_TOC}}"
+    type: bullets   # signal you expect [{section, bullets}] objects!
     default: [ {"section": "General", "bullets": [ "No outline available." ] } ]
 
   - jsonKey: key_takeaways
     docHeading: "{{KEY_TAKEAWAYS}}"
-    type: meta_bullets      # new type: expects array of objects w/ text & metadata
+    type: bullets      # new type: expects array of objects w/ text & metadata
     default: []
 
 tables:
+
   - jsonKey: next_steps
-    docHeading: "NEXT STEPS"
     placeholder: "{{NEXT_STEPS_TABLE}}"
-    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
-    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    columns:
+      - { header: Subject      , field: subject }          # ← NEW (first)
+      - { header: Description  , field: description }
+      - { header: Owner        , field: owner }
+      - { header: Due          , field: due_date }
+      - { header: Priority     , field: priority_score }
+      - { header: Urgency      , field: urgency_score }
+      - { header: Citation     , field: citation }
+      - { header: Topic        , field: high_level_topic }
+    default_row:
+      subject         : "No Updates"
+      description     : "No Updates"
+      owner           : "N/A"
+      due_date        : "N/A"
+      priority_score  : "N/A"
+      urgency_score   : "N/A"
+      citation        : "N/A"
+      high_level_topic: "N/A"
+
 
   - jsonKey: strategic_initiatives
     docHeading: "STRATEGIC INITIATIVES"
     placeholder: "{{STRATEGIC_INITIATIVES}}"
-    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
-    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    columns:
+      - { header: Subject      , field: subject }          # ← NEW (first)
+      - { header: Description  , field: description }
+      - { header: Owner        , field: owner }
+      - { header: Due          , field: due_date }
+      - { header: Priority     , field: priority_score }
+      - { header: Urgency      , field: urgency_score }
+      - { header: Citation     , field: citation }
+      - { header: Topic        , field: high_level_topic }
+    default_row:
+      subject         : "No Updates"
+      description     : "No Updates"
+      owner           : "N/A"
+      due_date        : "N/A"
+      priority_score  : "N/A"
+      urgency_score   : "N/A"
+      citation        : "N/A"
+      high_level_topic: "N/A"
 
   - jsonKey: executive_followup
     docHeading: "EXECUTIVE FOLLOW UP"
     placeholder: "{{EXECUTIVE_FOLLOW-UP}}"
-    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
-    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    columns:
+      - { header: Subject      , field: subject }          # ← NEW (first)
+      - { header: Description  , field: description }
+      - { header: Owner        , field: owner }
+      - { header: Due          , field: due_date }
+      - { header: Priority     , field: priority_score }
+      - { header: Urgency      , field: urgency_score }
+      - { header: Citation     , field: citation }
+      - { header: Topic        , field: high_level_topic }
+    default_row:
+      subject         : "No Updates"
+      description     : "No Updates"
+      owner           : "N/A"
+      due_date        : "N/A"
+      priority_score  : "N/A"
+      urgency_score   : "N/A"
+      citation        : "N/A"
+      high_level_topic: "N/A"
 
   - jsonKey: james_grant_actions
     docHeading: "JAMES GRANT ITEMS"
     placeholder: "{{JAMES_GRANT_ACTIONS}}"
-    columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
-    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    columns:
+      - { header: Subject      , field: subject }          # ← NEW (first)
+      - { header: Description  , field: description }
+      - { header: Owner        , field: owner }
+      - { header: Due          , field: due_date }
+      - { header: Priority     , field: priority_score }
+      - { header: Urgency      , field: urgency_score }
+      - { header: Citation     , field: citation }
+      - { header: Topic        , field: high_level_topic }
+    default_row:
+      subject         : "No Updates"
+      description     : "No Updates"
+      owner           : "N/A"
+      due_date        : "N/A"
+      priority_score  : "N/A"
+      urgency_score   : "N/A"
+      citation        : "N/A"
+      high_level_topic: "N/A"
 
 links:
   - jsonKey: transcript_link
