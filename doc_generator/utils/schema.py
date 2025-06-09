@@ -1,14 +1,16 @@
 from utils.logger import get_logger
+import re
+import datetime
 
 logger = get_logger(__name__)
 
 DEFAULTS = {
     "title": "No Updates",
-    "date": "No Updates",
-    "attendees": ["No Updates"],
-    "summary": "No Updates",
-    "outline": ["No Updates"],
-    "key_takeaways": ["No Updates"],
+    "date": datetime.date.today().isoformat(),
+    "attendees": [],
+    "summary": "No Executive Summary or meeting details available.",
+    "outline": [{"section": "General", "bullets": ["No outline available."]}],
+    "key_takeaways": [],
     "next_steps": [],
     "strategic_initiatives": [],
     "executive_followup": [],
@@ -17,118 +19,136 @@ DEFAULTS = {
     "summary_link": "No Updates",
 }
 
-TABLE_FIELDS = {
-    "next_steps": [
-        "description", "owner", "due_date", "priority_score", "urgency_score", "citation", "high_level_topic"
-    ],
-    "strategic_initiatives": [
-        "description", "owner", "due_date", "priority_score", "urgency_score", "citation", "high_level_topic"
-    ],
-    "executive_followup": [
-        "description", "owner", "due_date", "priority_score", "urgency_score", "citation", "high_level_topic"
-    ],
-    "james_grant_actions": [
-        "description", "owner", "due_date", "priority_score", "urgency_score", "citation", "high_level_topic", "james_grant_reference"
-    ],
-}
+ACTION_FIELDS = [
+    "description", "owner", "due_date", "urgency_score",
+    "priority_score", "citation", "high_level_topic"
+]
 
-TABLE_FIELD_DEFAULT = "N/A"
-
-def ensure_list(val, default):
-    if isinstance(val, list) and val:
-        return val
+def ensure_attendees(val):
+    # List of non-empty, unique strings
+    if isinstance(val, list):
+        return [str(x).strip() for x in val if x and str(x).strip()]
     elif isinstance(val, str) and val.strip():
         return [val.strip()]
-    else:
-        return default.copy()
+    return []
 
 def normalize_summary(summary):
-    if summary is None:
-        return DEFAULTS["summary"]
-    if isinstance(summary, list):
-        summary = [str(x).strip() for x in summary if x and str(x).strip()]
-        return "\n\n".join(summary) if summary else DEFAULTS["summary"]
-    if isinstance(summary, str) and summary.strip():
+    # Always output a single string
+    if isinstance(summary, str):
         return summary.strip()
+    if isinstance(summary, (list, tuple)):
+        return " ".join(str(s).strip() for s in summary if s and str(s).strip())
     return DEFAULTS["summary"]
 
-def normalize_table(records, table_name):
-    """
-    Ensure each entry in a table section is a dict with all required fields.
-    """
-    fields = TABLE_FIELDS[table_name]
-    if not (isinstance(records, list) and records):
-        return []  # handled by docbuilder as 'No Updates'
+def normalize_outline(outline):
+    # Canonical structure: array of {"section", "bullets"}
+    if isinstance(outline, list) and all(isinstance(x, dict) for x in outline):
+        output = []
+        for item in outline:
+            section = item.get("section") or "General"
+            bullets = item.get("bullets") or []
+            output.append({"section": str(section), "bullets": [str(b) for b in bullets if b]})
+        return output or DEFAULTS["outline"]
+    # Handle legacy: flat or heading/detail pairs
+    if isinstance(outline, list):
+        items = [str(x) for x in outline if x]
+        if len(items) % 2 == 0:
+            return [
+                {"section": items[i], "bullets": [items[i+1]]}
+                for i in range(0, len(items), 2)
+            ]
+        return [{"section": "General", "bullets": items or ["No outline available."]}]
+    return DEFAULTS["outline"]
 
-    normed = []
-    for i, record in enumerate(records):
+def normalize_key_takeaways(kt):
+    # Array of objects with strict schema for downstream analytics
+    out = []
+    required = ["text", "category", "type", "owner", "priority_score", "citation"]
+    if not isinstance(kt, list): return []
+    for item in kt:
+        if isinstance(item, dict):
+            obj = {k: item.get(k, "") for k in required}
+            # Defensive type for score
+            try: obj["priority_score"] = int(obj["priority_score"])
+            except Exception: obj["priority_score"] = 1
+            out.append(obj)
+        elif isinstance(item, str):
+            out.append(dict.fromkeys(required, ""))
+            out[-1]["text"] = item
+            out[-1]["priority_score"] = 1
+    return out
+
+def normalize_table(records, table_type):
+    required = ACTION_FIELDS.copy()
+    if table_type == "james_grant_actions":
+        required.append("james_grant_reference")
+    out = []
+    for i, row in enumerate(records or []):
         rec = {}
-        # Defensive: sometimes tables are not list-of-dict (e.g. string or None)
-        if not isinstance(record, dict):
-            logger.warning(f"{table_name}: Entry {i} is not a dict ({type(record)}), got '{record}', auto-defaulting all fields.")
-            for f in fields:
-                rec[f] = TABLE_FIELD_DEFAULT
+        if not isinstance(row, dict):
+            logger.warning(f"{table_type} row {i} is not dict; defaulting all fields.")
+            rec = {k: "N/A" for k in required}
+            if "james_grant_reference" in rec: rec["james_grant_reference"] = False
         else:
-            for f in fields:
-                rec[f] = record.get(f, TABLE_FIELD_DEFAULT)
-                # If the value is empty string or None, default it
-                if rec[f] in [None, ""]:
-                    rec[f] = TABLE_FIELD_DEFAULT
-        normed.append(rec)
-    return normed
+            for k in required:
+                v = row.get(k)
+                if k in ("urgency_score", "priority_score"):
+                    try: v = int(v)
+                    except Exception: v = 1
+                if k == "james_grant_reference":
+                    v = bool(v)
+                rec[k] = v if v is not None else ("N/A" if k != "james_grant_reference" else False)
+        out.append(rec)
+    return out
 
 def normalize_transcript(raw_json):
-    """
-    Converts raw LLM transcript JSON into canonical, type-safe, mapping-ready format.
-    All fields present, all types safe, all table entries padded with defaults.
-    """
     d = {}
-
-    # Scalars/fields
-    d["title"] = str(raw_json.get("title") or DEFAULTS["title"])
-    d["date"] = str(raw_json.get("date") or DEFAULTS["date"])
-
-    raw_attendees = raw_json.get("attendees")
-    # Coerce to list of str; filter blanks
-    if isinstance(raw_attendees, list) and raw_attendees:
-        attendees = [str(a).strip() for a in raw_attendees if a and str(a).strip()]
-        d["attendees"] = attendees if attendees else DEFAULTS["attendees"]
-    elif isinstance(raw_attendees, str) and raw_attendees.strip():
-        d["attendees"] = [raw_attendees.strip()]
-    else:
-        d["attendees"] = DEFAULTS["attendees"]
-
-    # Summary block
+    d["title"] = str(raw_json.get("title") or DEFAULTS["title"]).strip()
+    d["date"] = str(raw_json.get("date") or DEFAULTS["date"]).strip()
+    d["attendees"] = ensure_attendees(raw_json.get("attendees"))
     d["summary"] = normalize_summary(raw_json.get("summary"))
-
-    # Bullets fields
-    for key in ["outline", "key_takeaways"]:
-        raw = raw_json.get(key)
-        d[key] = ensure_list(raw, DEFAULTS[key])
-
-    # Table sections
-    for tkey in ["next_steps", "strategic_initiatives", "executive_followup", "james_grant_actions"]:
-        d[tkey] = normalize_table(raw_json.get(tkey), tkey)
-
-    # Optional links
+    d["outline"] = normalize_outline(raw_json.get("outline"))
+    d["key_takeaways"] = normalize_key_takeaways(raw_json.get("key_takeaways"))
+    for t in ["next_steps", "strategic_initiatives", "executive_followup", "james_grant_actions"]:
+        d[t] = normalize_table(raw_json.get(t), t)
     for lk in ["transcript_link", "summary_link"]:
         v = raw_json.get(lk, DEFAULTS[lk])
-        d[lk] = v if (v and isinstance(v, str)) else DEFAULTS[lk]
-
-    # Could add: log keys in raw_json not in canonical schema (future debugging/auditing)
+        d[lk] = v if isinstance(v, str) and v else DEFAULTS[lk]
     return d
 
-# Optional: Test with "bad" data
 if __name__ == "__main__":
+    # Example with intended final structure
     example = {
-        "title": "Test",
-        "attendees": "John Doe",
-        "summary": ["Item one", "", None, "Item two"],
-        "outline": "Just this line",
+        "title": "Product Strategy Q2 Alignment",
+        "date": "2025-05-20",
+        "attendees": ["Alice", "Bob"],
+        "summary": "Major roadmap prioritization and post-mortem. Focus on SSO, API speed. Two critical risks flagged.",
+        "outline": [
+            {"section": "Product Roadmap", "bullets": ["SSO scheduled for June.", "API latency improvements in Q2."]},
+            {"section": "Retrospective", "bullets": ["Past failed launches reviewed.", "Customer response analyzed."]}
+        ],
+        "key_takeaways": [
+            {
+                "text": "SSO required for major Q3 customer.",
+                "category": "Product",
+                "type": "Decision",
+                "owner": "Team Lead",
+                "priority_score": 10,
+                "citation": "Para 8"
+            }
+        ],
         "next_steps": [
-            {"description": "Do it!", "owner": "", "due_date": None, "priority_score": 8},
-            "Not a dict"
-        ]
+            {
+                "description": "Migrate login system.",
+                "owner": "Bob",
+                "due_date": "2025-06-29",
+                "urgency_score": 9,
+                "priority_score": 9,
+                "citation": "Para 10",
+                "high_level_topic": "Engineering"
+            }
+        ],
+        "james_grant_actions": []
     }
     import pprint
     pprint.pprint(normalize_transcript(example))

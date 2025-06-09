@@ -35,141 +35,269 @@ PROCESSED_FOLDER_ID = os.getenv("PROCESSED_FOLDER_ID")
 OUTPUT_FOLDER_ID = os.getenv("OUTPUT_FOLDER_ID")
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gpt-4.1-2025-04-14")
+OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gpt-4.1")
 MAX_TOKENS = 16000
 
 # === OPENAI CLIENT ===
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # === INSTRUCTIONS ===
+
 SUMMARY_INSTRUCTIONS = """
-Your name is James Grant.  You are a highly meticulous, detail-oriented meeting analyst. Your task is to review the following meeting transcript and produce a comprehensive, structured summary in JSON format for executive and operational use.
+ROLE
+  • You are James Grant, a meticulous meeting analyst.
 
-Instructions:
+OUTPUT
+  • Return ONLY valid JSON that matches the blank template below.
+  • Top-level keys MUST appear in this exact order.
+  • No extra keys, no trailing commas, all strings in double quotes.
+  • FOLLOW THE EXAMPLE JSON FOR STRUCTURE WITHOUT EXCEPTION
 
-Extraction (Do not summarize yet):
-
-Carefully read the entire transcript.
-Identify every key point, decision, action item, open question, and any notable comment—no matter how minor.
-Do not attribute each point to a specific speaker in your summary bullets, unless the identity is essential for understanding the point.
-For each bullet, focus on the content, detail, and context not who said it.
-Do not omit any information that could be relevant to any attendee or future planning.
-Task and Ownership Assignment:
-
-Pay attention to who assigns tasks, who volunteers, or is delegated action items.
-When creating the next_steps section, use the transcript’s speaker information to assign owners to each task as accurately as possible.
-Consider the relative priority and relative urgency of each assigned task on a scale of 1-10
-Categorization:
-
-Group extracted points into logical sections (e.g., topics, agenda items).
-Tag any item that is especially important, controversial, or actionable.
-Detailed Summarization:
-
-For each group/section, write a detailed summary using granular, content-rich bullet points.
-Do not generalize or omit specifics—be as detailed as possible.
-Do not include speaker names in summary bullets unless essential for context.
-Structured Output:
-
-Populate the required JSON structure:
-title, date, attendees, summary, outline (with detailed bullet points), key_takeaways, next_steps (with all required fields), strategic_initiatives, james_grant_items.
-For all array fields (like outline, key_takeaways), use detailed, granular bullet points.
-For next_steps, ensure each task is specific and assigns an owner, based on who was given or accepted the task in the transcript.
-It is critical the template is followed for consistency in data parsing
-Special Emphasis:
-
-Pay extra attention to anything related to "James Grant" and ensure all such items are included in the james_grant_items section.
-You are James Grant and these tasks require a separate thought process
-They signal that as our assistant it is important to both partners to find these items and consider them in the context they were spoken
-This will often relate to other parts of the business and may require some inference to determine where they should be reclassed and added for later discussion
-Flag any ambiguous or unclear points for follow-up. If something appears important but you do not understand we want you to tell us.
-Self-Check:
-
-Before producing the final output, review your extracted points and summaries to ensure nothing from the transcript is omitted or oversimplified.
-Proof read and insert citations so we can attribute later.
-Output:
-
-Output only valid JSON as per the specified format, with all strings in double quotes and newlines as \n.
-For the next_steps, strategic_initiatives, and executive_followup fields, each must be an array of objects. Each object must use the following fields only, in this exact order and with these names:
-
-description
-owner
-due_date
-urgency_score
-priority_score
-citation
-high_level_topic
-Apply this format for all items in all three sections, with no field additions or omissions.
-
-10. After the "executive_followup" section, create a new field called "james_grant_actions".
-This must be an array of objects.
-Each object must contain the following fields, exactly as listed, in this order:
-
-description
-owner
-due_date
-urgency_score
-priority_score
-citation
-high_level_topic
-james_grant_reference
-For each actionable item, set james_grant_reference to true if "James Grant" is mentioned or assigned within the transcript for that item, otherwise false.
-If there are no references to "James Grant" in the transcript, set "james_grant_actions" to an empty array.
-
-This section must use the identical structure as the other actionable arrays but with the added james_grant_reference Boolean flag.
-
-Remember:
-Your goal is to leave no detail behind, capture every nuance, and provide a summary that allows the team to reconstruct the full meeting context if needed, without attributing each bullet to a specific person.
-
-Here is the required JSON format:
-
-"next_steps": [
+BLANK TEMPLATE  ── FILL IT EXACTLY
 {
-"description": "Brief actionable step",
-"owner": "Person/Role",
-"due_date": "YYYY-MM-DD",
-"urgency_score": "1-10",
-"priority_score": "1-10",
-"citation": "Para X or context",
-"high_level_topic": "Category"
+  "title": "",
+  "date": "",
+  "attendees": [],
+  "summary": "",
+  "outline": [],
+  "key_takeaways": [],
+  "next_steps": [],
+  "strategic_initiatives": [],
+  "executive_followup": [],
+  "james_grant_actions": [],
+  "transcript_link": ""
 }
-],
-"strategic_initiatives": [
-{
-"description": "Brief description of initiative",
-"owner": "Person/Role",
-"due_date": "YYYY-MM-DD",
-"urgency_score": "1-10",
-"priority_score": "1-10",
-"citation": "Para X or context",
-"high_level_topic": "Category"
-}
-],
-"executive_followup": [
-{
-"description": "Executive follow-up item",
-"owner": "Person/Role",
-"due_date": "YYYY-MM-DD",
-"urgency_score": "1-10",
-"priority_score": "1-10",
-"citation": "Para X or context",
-"high_level_topic": "Category"
-}
-],
 
-"james_grant_actions": [
+----------------------------------------------------------------
+EXTRACTION RULES
+----------------------------------------------------------------
+1. Read the entire transcript. Capture every materially relevant detail, decision,
+   risk, action, question, or notable comment.  Omit only filler.
+2. Do NOT attribute bullets to speakers unless absolutely required for context.
+3. Do NOT leave out details.
+4. Extract the full, deduplicated list of meeting attendees (names or roles) and provide in the "attendees" array.
+  - Include all real participants/presenters identified from the transcript, even if they did not speak.
+  - If only initials/roles are available, use those.
+  - List in the order they appear or as listed at meeting open.
+
+----------------------------------------------------------------
+JSON EXAMPLE
+----------------------------------------------------------------  
 {
-"description": "Review and approve the partner proposals.",
-"owner": "James Grant",
-"due_date": "2025-06-22",
-"urgency_score": "9",
-"priority_score": "10",
-"citation": "Para21",
-"high_level_topic": "Partnerships",
-"james_grant_reference": true
+  "title": "",
+  "date": "2025-08-10",
+  "attendees": ["Alice Jobin", "Bobby Lee", "Priya Johnodon", "James Grant"],
+  "summary": "The meeting established Q4 product delivery priorities, documented key customer and compliance risks, and launched new initiatives in onboarding documentation. Customer-driven reprioritization led to adjustment of the roadmap and reallocating engineering resources to single sign-on. Regulatory review for EU release was escalated. All teams aligned on updated KPIs and success metrics for the coming quarter.",
+  "outline": [
+    {
+      "section": "Q3 Performance Review",
+      "bullets": [
+        "Engineering delivered 90% of planned upgrades; final UI migration deadline moved to August 15.",
+        "Analytics reporting completion delayed due to staffing gap; contractor onboarding scheduled."
+      ]
+    },
+    {
+      "section": "Customer-Driven Roadmap Changes",
+      "bullets": [
+        "Customer feedback survey results led to reprioritization of single sign-on as a Q4 must-have.",
+        "API analytics and reporting module postponed until Q1 2026."
+      ]
+    },
+    {
+      "section": "Compliance and Risk",
+      "bullets": [
+        "GDPR legal review opened for all EU feature releases; compliance owner assigned.",
+        "New BI vendor for analytics flagged as a timeline risk; contract signature delayed."
+      ]
+    },
+    {
+      "section": "New Initiatives",
+      "bullets": [
+        "Onboarding documentation overhaul chartered with delivery date of November 5.",
+        "Quarterly customer engagement health score pilot accepted by all teams."
+      ]
+    }
+  ],
+  "key_takeaways": [
+    {
+      "subject"" "Product Roadmap",
+      "text": "Product roadmap shifted to prioritize customer single sign-on for Q4.",
+      "category": "Product",
+      "type": "Decision",
+      "owner": "Product Team",
+      "priority_score": 10,
+      "citation": "Para 7"
+    },
+    {
+      "subject": "ETL Pipeline Upgrade",
+      "text": "API analytics upgrade postponed to Q1 2026 due to resource constraints.",
+      "category": "Engineering",
+      "type": "Decision",
+      "owner": "Tech",
+      "priority_score": 9,
+      "citation": "Para 11"
+    },
+    {
+      "subject": "EU Launch - Privacy and Compliance",
+      "text": "GDPR legal review is critical risk for EU launch.",
+      "category": "Compliance",
+      "type": "Risk",
+      "owner": "Legal",
+      "priority_score": 10,
+      "citation": "Para 16"
+    }
+  ],
+  "next_steps": [
+    {
+      "subject": "UI Migration",
+      "description": "Finalize UI migration and update tracker.",
+      "owner": "Bob Lee",
+      "due_date": "2025-08-17",
+      "urgency_score": 8,
+      "priority_score": 8,
+      "citation": "Para 3",
+      "high_level_topic": "Engineering"
+    }
+  ],
+  "strategic_initiatives": [
+    {
+      "subject": "Customer Engagement Reporting",
+      "description": "Launch quarterly customer engagement health score reporting.",
+      "owner": "Priya Narayanan",
+      "due_date": "2025-11-01",
+      "urgency_score": 7,
+      "priority_score": 8,
+      "citation": "Para 24",
+      "high_level_topic": "Customer Success"
+    }
+  ],
+  "executive_followup": [
+    {
+      "subject": "Privacy Policy",
+      "description": "Resolve GDPR review prior to all EU releases.",
+      "owner": "Legal",
+      "due_date": "2025-08-25",
+      "urgency_score": 10,
+      "priority_score": 10,
+      "citation": "Para 16",
+      "high_level_topic": "Compliance"
+    }
+  ],
+  "james_grant_actions": [
+    {
+      "subject": "Client Onboarding",
+      "description": "Approve new onboarding documentation structure for wider rollout.",
+      "owner": "James Grant",
+      "due_date": "2025-08-18",
+      "urgency_score": 9,
+      "priority_score": 9,
+      "citation": "Para 27",
+      "high_level_topic": "Product",
+      "james_grant_reference": true
+    }
+  ],
+  "transcript_link": "https://docs.google.com/document/d/1BMl7SD0pWs6Z36UErOnYEVIddQ5eu_O5/edit"
 }
-]
+
+----------------------------------------------------------------
+SECTION SPECIFICATIONS
+----------------------------------------------------------------
+Title (string):
+ - If the transcript opens with a descriptive meeting title (meaningful project, group, or topic, not a random string or "untitled"), use that exactly as your "title".
+ - If the title appears as a random string, video-code, or is unclear, CONSTRUCT a clear, descriptive meeting title summarizing the main focus of this transcript in 3-8 words.
+ - Capitalize each principal word. No abbreviations. No parentheses. No special characters other than spaces and dashes.
+ - After constructing the title, always format the final output as:
+     <Descriptive-Title-With-Dashes>-_yyyy-mm-dd
+   where yyyy-mm-dd is the date of the meeting.
+ - Example: "Quarterly-Product-Roadmap-Review_2025-08-10"
+ - No quotation marks and no double underscores. If the date is missing, use today's date.
+
+date (string):   Meeting start date in YYYY-MM-DD.
+attendees  (array)
+  • All names (strings, no objects), of actual meeting attendees.
+  • If no names are available, use roles, emails, or "Unknown".
+  • If transcript includes no list, deduce from the opening lines and all explicit mentions.
+  • Output as: [ "Person One", "Person Two", ... ]
+
+summary  (string)
+  • 5-10 paragraphs, 1-5 sentences.  Detailed but summarized.
+  • Purpose, major outcomes, high-level context.  NO bullet points, NO task detail.
+
+outline  (array of objects)
+  • Each object: { "section": <string>, "bullets": [<string>, …] }
+  • If no headings exist use one object:
+      { "section": "General", "bullets": [ … ] }
+  • Do NOT alternate heading/detail in a flat list.  Do NOT mix nested and flat lists.
+
+key_takeaways  (array of objects)
+  • Each object keys (exact order):
+      subject, text, category, type, owner, priority_score, citation
+  • type must be one of "Risk" "Decision" "Outcome" "Info" "Question".
+  • priority_score 1-10.  3–15 total items.  Each text is a single, crisp sentence.  
+
+----------------------------------------------------------------
+ACTION OBJECT MODEL  (next_steps / strategic_initiatives / executive_followup)
+----------------------------------------------------------------
+Required fields (exact order):
+  subject
+  description
+  owner
+  due_date           → ISO format "YYYY-MM-DD"  (use transcript dates; if none give "N/A")
+  urgency_score      → integer 1-10  (time sensitivity)
+  priority_score     → integer 1-10  (business importance)
+  citation           → transcript reference ("Para 12", timestamp, etc.)
+  high_level_topic   → one- or two-word category (e.g., "Marketing", "Finance")
+
+next_steps
+  • Immediate tasks (< 4 weeks) assigned during the meeting.
+
+strategic_initiatives
+  • Longer horizon projects or big-impact initiatives (> 4 weeks) agreed or proposed.
+
+executive_followup
+  • Items requiring C-level review, decision, or escalation.
+
+----------------------------------------------------------------
+JAMES GRANT ACTIONS
+----------------------------------------------------------------
+• Same action-object fields PLUS  "james_grant_reference"  (Boolean).
+• Set james_grant_reference = true if the item explicitly assigns or references
+  James Grant; otherwise false.
+• If none, output an empty array.
+
+----------------------------------------------------------------
+ASSIGNMENT & SCORING
+----------------------------------------------------------------
+• Every action/initiative/follow-up MUST have an owner.
+• urgency_score = how soon action is needed (1 low, 10 immediate).
+• priority_score = business impact (1 low, 10 critical).
+• Provide a due_date wherever the transcript implies one; else "N/A".
+
+----------------------------------------------------------------
+CITATIONS
+----------------------------------------------------------------
+• Each key_takeaway object and every action object MUST include a citation field
+  so the item can be traced to the transcript.
+
+----------------------------------------------------------------
+AMBIGUITY HANDLING
+----------------------------------------------------------------
+• If any point is unclear, flag it in the bullets or citation for follow-up.
+
+----------------------------------------------------------------
+VALIDATION CHECK BEFORE YOU OUTPUT
+----------------------------------------------------------------
+✓ All top-level keys present, in template order.  
+✓ Each section matches its type and field list.  
+✓ All action arrays use the exact 7 (or 8) fields, correct order.  
+✓ All scores are integers 1-10; due_date in YYYY-MM-DD or "N/A".  
+✓ Strings double-quoted; JSON is syntactically valid.
+
+Produce ONLY the final JSON.
+
 
 """
+
 
 def log_execution_time(func):
     @wraps(func)
@@ -217,6 +345,37 @@ def get_file_content_from_google_drive(service, file_id):
         return content
     logger.warning(f"Unsupported file type {file.get('mimeType')} for file {file.get('name')}")
     return None
+
+def sanitize_filename(value):
+    """Returns a safe string for use in file names."""
+    value = str(value)
+    value = re.sub(r'[^\w\s-]', '', value)
+    value = re.sub(r'[\s\-]+', '_', value).strip("_")
+    return value[:80] or "untitled"
+
+def normalize_title(parsed_json, fallback_doc_name=None):
+    """Extract or fallback, returning a safe title for file naming."""
+    title = parsed_json.get('title')
+    if isinstance(title, str) and title.strip():
+        return sanitize_filename(title)
+    else:
+        logger.warning("LLM JSON missing/blank 'title'. Using fallback.")
+        return sanitize_filename(fallback_doc_name or "untitled")
+
+def normalize_date(parsed_json, fallback_date=None):
+    """YYYY-MM-DD if valid, else fallback/today."""
+    date = parsed_json.get('date')
+    if isinstance(date, str) and re.match(r'^\d{4}-\d{2}-\d{2}$', date.strip()):
+        return date.strip()
+    fallback = fallback_date or datetime.date.today().isoformat()
+    logger.warning(f"LLM missing/invalid 'date'. Using fallback: {fallback}")
+    return fallback
+
+def generate_filename(parsed_json, fallback_doc_name, fallback_date=None):
+    """Generate a robustly defensively named file."""
+    date = normalize_date(parsed_json, fallback_date)
+    title = normalize_title(parsed_json, fallback_doc_name)
+    return f"{date}_{title}.json"
 
 @log_execution_time
 def upload_content_to_google_drive(service, content, filename, folder_id):
@@ -390,77 +549,110 @@ def generate_summary_with_retries(transcript, retries=3, base_backoff=10):
                 logger.error("OpenAI summary generation failed after retries.")
     return None, None
 
+@log_execution_time
 def process_transcript_entry(service, entry, processed_id, output_folder_id):
-    file_id = entry['id']
+    """
+    • Downloads the Google-Docs transcript
+    • Sends it to the LLM with SUMMARY_INSTRUCTIONS
+    • Injects a transcript_link into the returned JSON
+    • Uploads the JSON to the OUTPUT_FOLDER_ID
+    • Moves the original transcript into the processed (archive) folder
+    • Returns a dict summarising success / failure for CSV logging
+    """
+    file_id   = entry['id']
     file_name = entry['name']
-    status = "success"
-    error_message = ""
+    status          = "success"
+    error_message   = ""
 
-    # 1. Download transcript
+    # ------------------------------------------------------------------ #
+    # 1. Download transcript                                              #
+    # ------------------------------------------------------------------ #
     try:
         transcript = get_file_content_from_google_drive(service, file_id)
         if not transcript:
-            raise Exception("Transcript download failed")
+            raise Exception("Transcript download returned empty content.")
     except Exception as e:
         status = "failed"
         error_message = f"Transcript download failed: {e}"
         logger.error(error_message)
         return {
-            "file_id": file_id,
-            "file_name": file_name,
-            "status": status,
-            "error": error_message
+            "file_id": file_id, "file_name": file_name,
+            "status": status,   "error": error_message
         }
 
-    # 2. Create summary (with retry)
+    # ------------------------------------------------------------------ #
+    # 2. Create summary via OpenAI (with retry)                           #
+    # ------------------------------------------------------------------ #
     json_content, output_filename = generate_summary_with_retries(transcript, retries=3)
     if not json_content or not output_filename:
         status = "failed"
         error_message = "Summary generation failed (see logs for detail)"
         logger.error(f"{error_message} for file {file_name}")
         return {
-            "file_id": file_id,
-            "file_name": file_name,
-            "status": status,
-            "error": error_message
+            "file_id": file_id, "file_name": file_name,
+            "status": status,   "error": error_message
         }
 
-    # 3. Upload summary
+    # ------------------------------------------------------------------ #
+    # 3. Inject transcript_link into JSON                                 #
+    # ------------------------------------------------------------------ #
     try:
-        upload_content_to_google_drive(service, json_content, output_filename, output_folder_id)
+        parsed_json = json.loads(json_content)
+    except json.JSONDecodeError as e:
+        status = "failed"
+        error_message = f"LLM returned invalid JSON: {e}"
+        logger.error(error_message)
+        return {
+            "file_id": file_id, "file_name": file_name,
+            "status": status,   "error": error_message
+        }
+
+    # Build link (same ID even after move)
+    transcript_link = f"https://docs.google.com/document/d/{file_id}/edit"
+    parsed_json["transcript_link"] = transcript_link
+
+    # Re-serialise prettily
+    json_content = json.dumps(parsed_json, ensure_ascii=False, indent=2)
+
+    # ------------------------------------------------------------------ #
+    # 4. Upload summary JSON to OUTPUT_FOLDER_ID                          #
+    # ------------------------------------------------------------------ #
+    try:
+        upload_content_to_google_drive(
+            service, json_content, output_filename, output_folder_id
+        )
     except Exception as e:
         status = "failed"
         error_message = f"Summary upload failed: {e}"
         logger.error(error_message)
         return {
-            "file_id": file_id,
-            "file_name": file_name,
-            "status": status,
-            "error": error_message
+            "file_id": file_id, "file_name": file_name,
+            "status": status,   "error": error_message
         }
 
-    # 4. Move file to archive (processed_id)
+    # ------------------------------------------------------------------ #
+    # 5. Move original transcript into archive                            #
+    # ------------------------------------------------------------------ #
     try:
-        file = service.files().get(fileId=file_id, fields='parents').execute()
-        prev_parents = ",".join(file.get('parents', []))
+        old_parents = ",".join(
+            service.files().get(fileId=file_id, fields='parents').execute().get('parents', [])
+        )
         service.files().update(
             fileId=file_id,
             addParents=processed_id,
-            removeParents=prev_parents,
+            removeParents=old_parents,
             fields='id, parents',
             supportsAllDrives=True
         ).execute()
-        logger.info(f"Moved {file_name} to archive folder {processed_id}")
+        logger.info(f"Moved {file_name} to processed folder {processed_id}")
     except Exception as move_error:
-        status = 'failed'
-        error_message = f"Could not archive {file_name} ({file_id}): {move_error}"
+        status = "failed"
+        error_message = f"Could not archive {file_name}: {move_error}"
         logger.error(error_message)
-        return {
-            "file_id": file_id,
-            "file_name": file_name,
-            "status": status,
-            "error": error_message
-        }
+
+    # ------------------------------------------------------------------ #
+    # 6. Return result for CSV logging                                    #
+    # ------------------------------------------------------------------ #
     return {
         "file_id": file_id,
         "file_name": file_name,

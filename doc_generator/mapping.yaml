@@ -1,49 +1,65 @@
-fields:
+sections:
   - jsonKey: title
-    placeholder: "{{TITLE}}"
+    docHeading: "{{TITLE}}"
     type: text
+    default: "No Title"
 
   - jsonKey: date
-    placeholder: "{{DATE}}"
+    docHeading: "{{DATE}}"
     type: text
-    transform: "iso-date"          # custom helper turns 2024-12-17T09:00Z → 2024-12-17
+    default: "No Date"
 
   - jsonKey: attendees
-    placeholder: "{{ATTENDEES}}"
+    docHeading: "{{ATTENDEES}}"
     type: text
-    transform: "join(', ')"
+    transform: join_comma
+    default: "Attendees not recorded"
 
   - jsonKey: summary
-    placeholder: "{{EXEC_SUMMARY}}"
-    type: text
+    docHeading: "{{EXECUTIVE_SUMMARY}}"
+    type: text              # it's now always a string, not bullets!
+    default: "No Executive Summary or meeting details available."
 
   - jsonKey: outline
-    placeholder: "{{OUTLINE}}"
-    type: bullets
+    docHeading: "{{OUTLINE}}"
+    type: section_bullets   # signal you expect [{section, bullets}] objects!
+    default: [ {"section": "General", "bullets": [ "No outline available." ] } ]
 
   - jsonKey: key_takeaways
-    placeholder: "{{KEY_TAKEAWAYS}}"
-    type: bullets
+    docHeading: "{{KEY_TAKEAWAYS}}"
+    type: meta_bullets      # new type: expects array of objects w/ text & metadata
+    default: []
 
 tables:
   - jsonKey: next_steps
-    bookmark: "BM_NEXT_STEPS_TABLE"
+    docHeading: "NEXT STEPS"
+    placeholder: "{{NEXT_STEPS_TABLE}}"
     columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
 
   - jsonKey: strategic_initiatives
-    bookmark: "BM_STRATEGIC_TABLE"
+    docHeading: "STRATEGIC INITIATIVES"
+    placeholder: "{{STRATEGIC_INITIATIVES}}"
     columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
 
   - jsonKey: executive_followup
-    bookmark: "BM_EXEC_FOLLOW_TABLE"
+    docHeading: "EXECUTIVE FOLLOW UP"
+    placeholder: "{{EXECUTIVE_FOLLOW-UP}}"
     columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
 
   - jsonKey: james_grant_actions
-    bookmark: "BM_JG_TABLE"
+    docHeading: "JAMES GRANT ITEMS"
+    placeholder: "{{JAMES_GRANT_ACTIONS}}"
     columns: [Description, Owner, Due, Priority, Urgency, Citation, Topic]
+    default_row: ["No Updates", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
 
 links:
   - jsonKey: transcript_link
     placeholder: "{{TRANSCRIPT_LINK}}"
+    default: "No transcript link provided."
+
   - jsonKey: summary_link
     placeholder: "{{SUMMARY_LINK}}"
+    default: "No summary link provided."
