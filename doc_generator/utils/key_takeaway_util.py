@@ -1,9 +1,7 @@
-# utils/key_takeaway_util.py
 from typing import List, Dict, Any
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
-
 
 def build_key_takeaway_requests(
     docs_service,
@@ -15,7 +13,7 @@ def build_key_takeaway_requests(
     • Delete the paragraph that contains the fragment 'KEY_TAKEAWAYS'
       (works even when '{{', '}}' are separate runs).
     • Insert blocks:
-          HEADING_4  subject
+          HEADING_3  subject
           HEADING_5  Category | Type | Owner | Priority | Citation
           P          free text
     Returns a batch-ready list of requests.
@@ -63,18 +61,17 @@ def build_key_takeaway_requests(
             if kt.get(fld)
         )
 
-        # Subject  (HEADING_4)
-        _style("HEADING_4", _insert(subj + "\n"))
+        # Subject  (HEADING_3)
+        _style("HEADING_3", _insert(subj + "\n"))
 
         # Meta line (HEADING_5)
         if meta:
             _style("HEADING_5", _insert(meta + "\n"))
 
-        # Body text (NORMAL_TEXT)  ←————  NEW LINE
+        # Body text (NORMAL_TEXT)
         if body:
             length = _insert(body + "\n\n")        # add two newlines after body
             _style("NORMAL_TEXT", length)          # reset to normal paragraph
-
 
     logger.debug("KT-requests built: %d", len(reqs))
     return reqs

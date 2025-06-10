@@ -6,16 +6,14 @@ import yaml
 
 from utils.logger import get_logger
 
-# Set up logger for this module
 logger = get_logger(__name__)
 
 # Load .env from parent dir
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=PROJECT_ROOT / ".env")
 
-# Import your app utilities
 from utils.schema import normalize_transcript
-from utils.doc_builder import DocBuilder  # You'll have to implement this!
+from utils.doc_builder import DocBuilder
 
 def load_mapping(mapping_path):
     try:
@@ -64,11 +62,10 @@ def main(transcript_json_path):
             logger.error(f"{var} not set in .env")
             exit(1)
 
-    import pprint
+    logger.info(f"Using template_doc_id: {template_doc_id}")
 
-    # … existing code …
-    normalized = normalize_transcript(raw_transcript)   # <- the canonical form
-    pprint.pp(normalized.get("key_takeaways", [])[:2])  # <-- add this line
+    import pprint
+    pprint.pp(normalized.get("key_takeaways", [])[:2])  # Inspect first 2 KT
 
     # Initialize and run DocBuilder
     doc_builder = DocBuilder(
@@ -82,7 +79,7 @@ def main(transcript_json_path):
     try:
         result = doc_builder.generate_document(normalized)
     except Exception as e:
-        logger.error(f"Error during doc generation: {e}")
+        logger.error(f"Error during doc generation: {e}", exc_info=True)
         print("Failed to generate doc. See logs for details.")
         exit(1)
 
